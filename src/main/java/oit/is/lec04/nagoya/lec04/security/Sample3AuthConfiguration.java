@@ -27,7 +27,7 @@ public class Sample3AuthConfiguration {
     // UserBuilder usersにユーザ名，パスワード，ロールを指定してbuildする
     // このときパスワードはBCryptでハッシュ化されている．
     // ハッシュ化されたパスワードを得るには，この授業のbashターミナルで下記のように末尾にユーザ名とパスワードを指定すると良い(要VPN)
-    // $ sshrun htpasswd -nbBC 10 user1 p@ss
+    // $ sshrun htpasswd -nbBC 10 user1 misokatsu admin syatihoko
     UserDetails user1 = users
         .username("user1")
         .password("$2y$10$hhBsghMWUtbqtF.EDq2sh.dEavwg08QpxCZ4RIJNthfCuvpcBe2xq")
