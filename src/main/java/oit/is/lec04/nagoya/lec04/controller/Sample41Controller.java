@@ -13,19 +13,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/*
-import oit.is.lec04.nagoya.lec04DB.model.Chamber;
+import oit.is.lec04.nagoya.lec04.model.Chamber;
 import oit.is.lec04.nagoya.lec04.model.ChamberMapper;
-import oit.is.inudaisuki.springboot_samples.model.ChamberUser;
-import oit.is.inudaisuki.springboot_samples.model.UserInfo;
-*/
+//import oit.is.lec04.nagoya.lec04.model.ChamberUser;
+//import oit.is.lec04.nagoya.lec04.model.UserInfo;
 
 @Controller
 @RequestMapping("/sample4")
 public class Sample41Controller {
 
-  // @Autowired
-  // ChamberMapper chamberMapper;
+  @Autowired
+  ChamberMapper chamberMapper;
 
   @GetMapping("step1")
   public String sample41() {
@@ -54,16 +52,13 @@ public class Sample41Controller {
    * @param model
    * @return
    */
+  @GetMapping("step2/{id}")
+  public String sample42(@PathVariable Integer id, ModelMap model) {
+    Chamber chamber2 = chamberMapper.selectById(id);
+    model.addAttribute("chamber2", chamber2);
 
-  /*
-   * @GetMapping("step2/{id}")
-   * public String sample42(@PathVariable Integer id, ModelMap model) {
-   * Chamber chamber2 = chamberMapper.selectById(id);
-   * model.addAttribute("chamber2", chamber2);
-   *
-   * return "sample41.html";
-   * }
-   */
+    return "sample41.html";
+  }
 
   /**
    *
@@ -75,60 +70,24 @@ public class Sample41Controller {
    *         このメソッドが開始するとトランザクションが開始され，メソッドが正常に終了するとDBへのアクセスが確定する（Runtime
    *         errorなどで止まった場合はロールバックが行われる）
    */
+  @PostMapping("step3")
+  @Transactional
+  public String sample43(@RequestParam String chamberName, ModelMap model, Principal prin) {
+    String loginUser = prin.getName(); // ログインユーザ情報
+    Chamber chamber3 = new Chamber();
+    chamber3.setChamberName(chamberName);
+    chamber3.setUserName(loginUser);
+    chamberMapper.insertChamber(chamber3);
+    model.addAttribute("chamber3", chamber3);
+    // System.out.println("ID:" + chamber3.getId());
+    return "sample43.html";
+  }
 
-  /*
-   * @PostMapping("step3")
-   *
-   * @Transactional
-   * public String sample43(@RequestParam String chamberName, ModelMap model,
-   * Principal prin) {
-   * String loginUser = prin.getName(); // ログインユーザ情報
-   * Chamber chamber3 = new Chamber();
-   * chamber3.setChamberName(chamberName);
-   * chamber3.setUserName(loginUser);
-   * chamberMapper.insertChamber(chamber3);
-   * model.addAttribute("chamber3", chamber3);
-   * // System.out.println("ID:" + chamber3.getId());
-   * return "sample43.html";
-   * }
-   *
-   * @PostMapping("step5")
-   * public String sample45(@RequestParam String chamberName, ModelMap model) {
-   * ArrayList<Chamber> chambers5 =
-   * chamberMapper.selectAllByChamberName(chamberName);
-   * model.addAttribute("chambers5", chambers5);
-   * return "sample44.html";
-   * }
-   *
-   * @GetMapping("step7")
-   *
-   * @Transactional
-   * public String sample47(ModelMap model) {
-   * ArrayList<ChamberUser> chamberUsers7 = chamberMapper.selectAllChamberUser();
-   * model.addAttribute("chamberUsers7", chamberUsers7);
-   * return "sample46.html";
-   * }
-   *
-   * @PostMapping("step8")
-   *
-   * @Transactional
-   * public String sample48(@RequestParam Double height, @RequestParam Integer
-   * age, ModelMap model, Principal prin) {
-   * String loginUser = prin.getName(); // ログインユーザ情報
-   * UserInfo ui = new UserInfo();
-   * ui.setUserName(loginUser);
-   * ui.setAge(age);
-   * ui.setHeight(height);
-   * try {
-   * chamberMapper.insertUserInfo(ui);
-   * } catch (RuntimeException e) {//
-   * 既に身長が登録されているユーザでさらに登録しようとすると実行時例外が発生するので，コンソールに出力してinsertをSkipする
-   * System.out.println("Exception:" + e.getMessage());
-   * }
-   * // insert後にすべての身長が登録されているユーザを取得する
-   * ArrayList<ChamberUser> chamberUsers7 = chamberMapper.selectAllChamberUser();
-   * model.addAttribute("chamberUsers7", chamberUsers7);
-   * return "sample46.html";
-   * }
-   */
+  @PostMapping("step5")
+  public String sample45(@RequestParam String chamberName, ModelMap model) {
+    ArrayList<Chamber> chambers5 = chamberMapper.selectAllByChamberName(chamberName);
+    model.addAttribute("chambers5", chambers5);
+    return "sample44.html";
+  }
+
 }
